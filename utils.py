@@ -10,7 +10,7 @@ def parse_form_data(form_data: str) -> list:
     return [tuple(pair.split("=")) for pair in form_data.split("&")]
 
 
-def get_marked_form(fields: list) -> list:
+def get_marked_form(fields: list) -> dict:
     return {k: mark_field(v) for k, v in fields}
 
 
@@ -27,7 +27,7 @@ def mark_field(field: str) -> str:
     return FieldType.TEXT.value
 
 
-def find_matching_template(templates: list[dict], form: dict):
+def find_matching_template(templates: list[dict], form: dict) -> str | None:
     for template in templates:
         if all(
             form.get(field_name) == field_type

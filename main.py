@@ -14,9 +14,8 @@ def get_form(form_data: str = Body()):
     form_fields = parse_form_data(form_data)
     marked_form = get_marked_form(form_fields)
     matching_template = find_matching_template(db.all(), marked_form)
-    if matching_template:
-        return matching_template
-    return marked_form
+
+    return matching_template if matching_template else marked_form
 
 
 if __name__ == "__main__":
