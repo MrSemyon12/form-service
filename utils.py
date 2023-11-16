@@ -1,3 +1,4 @@
+from datetime import datetime
 import re
 from db import FieldType
 
@@ -16,7 +17,16 @@ def get_marked_form(fields: list) -> dict:
 
 def mark_field(field: str) -> str:
     if bool(DATE_REGEX.match(field)):
-        return FieldType.DATE.value
+        formats = ["%d.%m.%Y", "%Y-%m-%d"]
+
+        for date_format in formats:
+            try:
+                datetime.strptime(field, date_format)
+                return FieldType.DATE.value
+            except ValueError:
+                continue
+
+        return FieldType.TEXT.value
 
     if bool(PHONE_REGEX.match(field)):
         return FieldType.PHONE.value

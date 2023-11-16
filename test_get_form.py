@@ -59,6 +59,13 @@ UNMATCH_CASES = [
     ('"customer_email=emailmail.ru"', {"customer_email": "text"}),
 ]
 
+IVALID_DATE_CASES = [
+    ('"customer_date=2000-32-22"', {"customer_date": "text"}),
+    ('"customer_date=00.12.2000"', {"customer_date": "text"}),
+    ('"customer_date=01.13.2000"', {"customer_date": "text"}),
+    ('"customer_date=44.13.2000"', {"customer_date": "text"}),
+]
+
 
 class TestGetForm(unittest.TestCase):
     def test_db_match(self):
@@ -70,6 +77,13 @@ class TestGetForm(unittest.TestCase):
 
     def test_db_unmatch(self):
         for input, output in UNMATCH_CASES:
+            response = requests.post(
+                url=f"{SERVER_URL}{ENDPOINT_URL}", data=input
+            ).json()
+            self.assertEqual(response, output)
+
+    def test_invalid_date(self):
+        for input, output in IVALID_DATE_CASES:
             response = requests.post(
                 url=f"{SERVER_URL}{ENDPOINT_URL}", data=input
             ).json()
