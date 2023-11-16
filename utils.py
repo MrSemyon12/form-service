@@ -9,7 +9,15 @@ EMAIL_REGEX = re.compile(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$")
 
 
 def parse_form_data(form_data: str) -> list[tuple[str, str]]:
-    return [tuple(pair.split("=")) for pair in form_data.split("&")]
+    items = form_data.split("&")
+    result = []
+    for item in items:
+        k, v = item.split("=", 1)
+        if k == "" or v == "":
+            raise ValueError
+        result.append((k, v))
+
+    return result
 
 
 def get_marked_form(fields: list) -> dict:

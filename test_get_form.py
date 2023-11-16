@@ -1,4 +1,5 @@
 import unittest
+from fastapi import status
 import requests
 
 SERVER_URL = "http://127.0.0.1:8000"
@@ -66,6 +67,16 @@ IVALID_DATE_CASES = [
     ('"customer_date=44.13.2000"', {"customer_date": "text"}),
 ]
 
+RAISE_CASES = [
+    '"customer_email=email@mail.ru&dadasd==sadasd=fasf==f&&&"',
+    '"&user_email=5"',
+    '"user_email=&"',
+    '"user"',
+    '""',
+    '"&"',
+    '"="',
+]
+
 
 class TestGetForm(unittest.TestCase):
     def test_db_match(self):
@@ -88,6 +99,11 @@ class TestGetForm(unittest.TestCase):
                 url=f"{SERVER_URL}{ENDPOINT_URL}", data=input
             ).json()
             self.assertEqual(response, output)
+
+    def test_value_error(self):
+        for input in RAISE_CASES:
+            response = requests.post(url=f"{SERVER_URL}{ENDPOINT_URL}", data=input)
+            self.assertEqual(response.status_code, status.HTTP_422_UNPROCESSABLE_ENTITY)
 
 
 if __name__ == "__main__":
